@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strconv"
 
@@ -48,9 +49,23 @@ type service struct {
 
 // NewClient returns a new Namecheap API Client
 func NewClient(options *ClientOptions) *Client {
+
+	// Set up HTTP client with custom HTTP proxy if specified
+	var httpClient *http.Client
+	proxyURL := os.Getenv("CUSTOM_HTTP_PROXY")
+	if proxyURL != "" {
+		transport := cleanhttp.DefaultPooledTransport()
+		transport.Proxy = func(_ *http.Request) (*url.URL, error) {
+			return url.Parse(proxyURL)
+		}
+		httpClient = &http.Client{Transport: transport}
+	} else {
+		httpClient = cleanhttp.DefaultClient()
+	}
+
 	client := &Client{
 		ClientOptions: options,
-		http:          cleanhttp.DefaultClient(),
+		http:          httpClient,
 		sr:            syncretry.NewSyncRetry(&syncretry.Options{Delays: []int{1, 5, 15, 30, 50}}),
 	}
 
@@ -73,7 +88,7 @@ func (c *Client) NewRequest(body map[string]string) (*http.Request, error) {
 	u, err := url.Parse(c.BaseURL)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error parsing base URL: %s", err)
+		return nil, fmt.Errorf("error parsing base URL: %s", err)
 	}
 
 	body["Username"] = c.ClientOptions.UserName
@@ -87,7 +102,7 @@ func (c *Client) NewRequest(body map[string]string) (*http.Request, error) {
 	req, err := http.NewRequest("POST", u.String(), bytes.NewBufferString(rBody))
 
 	if err != nil {
-		return nil, fmt.Errorf("Error creating request: %s", err)
+		return nil, fmt.Errorf("error creating request: %s", err)
 	}
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
