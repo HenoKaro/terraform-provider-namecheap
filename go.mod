@@ -1,4 +1,4 @@
-module github.com/namecheap/terraform-provider-namecheap
+module github.com/henokaro/terraform-provider-namecheap
 
 require (
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320

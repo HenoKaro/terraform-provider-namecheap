@@ -8,7 +8,7 @@ The Namecheap Provider v2.0.0 is our new major release with much improved and st
 explain how to upgrade your old terraform files regarding new v2 format requirements.
 
 Major justification of a new approach has been described
-in [github issue](https://github.com/namecheap/terraform-provider-namecheap/issues/46).
+in [github issue](https://github.com/henokaro/terraform-provider-namecheap/issues/46).
 
 Primarily, the guide will consist of examples with old format of specific record and new one with a few notes. You have
 to change the terraform file format and apply a new state. Since we have completely changed approach to create records,
