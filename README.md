@@ -1,4 +1,4 @@
-# Namecheap Terraform Provider
+# Namecheap Terraform Provider With custom HTTP Proxy support
 
 A Terraform Provider for Namecheap domain DNS configuration.
 
